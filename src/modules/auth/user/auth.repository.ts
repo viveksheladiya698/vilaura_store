@@ -10,11 +10,11 @@ export const authRepository = {
   },
 
   createSession(data: {
-    userId: number;
+    userId: string;
     tokenHash: string;
     expiresAt: Date;
   }) {
-    return prisma.session.create({
+    return prisma.userSession.create({
       data: {
         userId: data.userId,
         tokenHash: data.tokenHash,
@@ -35,5 +35,14 @@ export const authRepository = {
         passwordHash: data.passwordHash,
       },
     });
-  }
+  },
+
+  deleteSessionByTokenHash(tokenHash: string) {
+    return prisma.userSession.deleteMany({
+      where: {
+        tokenHash,
+      },
+    });
+  },
+
 };

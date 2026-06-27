@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { loginSchema } from "./auth.schema";
-import { loginUser, registerUser } from "./auth.service";
-import { registerSchema } from "./auth.schema";
+import { loginSchema } from "@/modules/auth/user/auth.schema";
+import { loginUser, logoutUser, registerUser } from "@/modules/auth/user/auth.service";
+import { registerSchema } from "@/modules/auth/user/auth.schema";
 
 export async function loginController(request: Request) {
   try {
@@ -132,6 +132,37 @@ export async function registerController(request: Request) {
     }
 
     console.error("Registration failed:", error);
+
+    return Response.json(
+      {
+        success: false,
+        message: "An unexpected error occurred.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function logoutController() {
+  try {
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get("session_token")?.value;
+
+    if (sessionToken) {
+      await logoutUser(sessionToken);
+    }
+
+    cookieStore.delete("session_token");
+
+    return Response.json(
+      {
+        success: true,
+        message: "Logout successful.",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Logout failed:", error);
 
     return Response.json(
       {

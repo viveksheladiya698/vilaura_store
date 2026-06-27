@@ -82,3 +82,11 @@ export async function registerUser(input: RegisterInput) {
     role: user.role,
   };
 }
+
+export async function logoutUser(sessionToken: string) {
+  const tokenHash = createHash("sha256")
+    .update(sessionToken)
+    .digest("hex");
+
+  await authRepository.deleteSessionByTokenHash(tokenHash);
+}

@@ -1,10 +1,16 @@
 import "dotenv/config";
-import argon2 from "argon2";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Role } from "../src/generated/prisma/client";
+import { PrismaClient, EmployeeRole } from "../src/generated/prisma/client";
+import { hash } from "argon2";
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error("DATABASE_URL is missing.");
+}
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+  connectionString,
 });
 
 const prisma = new PrismaClient({
@@ -12,34 +18,47 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const passwordHash = await argon2.hash("Admin@123");
+  const email = process.env.SEED_ADMIN_EMAIL;
+  const password = process.env.SEED_ADMIN_PASSWORD;
 
-  const admin = await prisma.user.upsert({
+  if (!email || !password) {
+    throw new Error(
+      "SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required."
+    );
+  }
+
+  const passwordHash = await hash(password);
+
+  const employee = await prisma.employee.upsert({
     where: {
-      email: "admin@example.com",
+      email: email.toLowerCase(),
     },
     update: {
-      name: "Administrator",
+      name: "Vilaura Admin",
       passwordHash,
-      role: Role.ADMIN,
+      role: EmployeeRole.ADMIN,
       isActive: true,
+      emailVerified: true,
     },
     create: {
-      name: "Administrator",
-      email: "admin@example.com",
+      name: "Vilaura Admin",
+      email: email.toLowerCase(),
       passwordHash,
-      role: Role.ADMIN,
+      role: EmployeeRole.ADMIN,
+      employeeCode: "VIL-ADMIN-001",
+      jobTitle: "Administrator",
       isActive: true,
+      emailVerified: true,
     },
   });
 
-  console.log(`Admin created: ${admin.email}`);
+  console.log("Admin created:", employee.email);
 }
 
 main()
   .catch((error) => {
-    console.error("Admin seed failed:", error);
-    process.exit(1);
+    console.error(error);
+    process.exitCode = 1;
   })
   .finally(async () => {
     await prisma.$disconnect();
