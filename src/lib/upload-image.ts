@@ -11,7 +11,7 @@ const ALLOWED_IMAGE_TYPES: Record<string, string> = {
 };
 
 export async function uploadCategoryImage(
-  file: File
+  file: File, path1: string
 ): Promise<string> {
   const extension = ALLOWED_IMAGE_TYPES[file.type];
 
@@ -29,12 +29,13 @@ export async function uploadCategoryImage(
 
   const fileName = `${randomUUID()}.${extension}`;
 
+  const uploadPath = path1.replace(/^\//, "").replace(/\/$/, "");
+
   const uploadDirectory = path.join(
     process.cwd(),
     "public",
     "uploads",
-    "admin",
-    "categories"
+    uploadPath
   );
 
   await mkdir(uploadDirectory, {
@@ -48,5 +49,5 @@ export async function uploadCategoryImage(
 
   await writeFile(filePath, buffer);
 
-  return `/uploads/admin/categories/${fileName}`;
+  return `/uploads/${uploadPath}/${fileName}`;
 }

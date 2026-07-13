@@ -2,6 +2,8 @@ import { uploadCategoryImage } from "@/lib/upload-image";
 import { categoryRepository, } from "./category.repository";
 import type { CreateCategoryInput, UpdateCategoryInput, updateCategorySchema } from "./category.schema";
 
+const path = "admin/categories";
+
 function createSlug(name: string): string {
   return name
     .trim()
@@ -18,6 +20,7 @@ export async function createCategory(
   imageFile?: File
 ) {
   const name = input.name.trim();
+
 
   const existingCategory =
     await categoryRepository.findByName(name);
@@ -42,7 +45,7 @@ export async function createCategory(
   let imagePath: string | undefined;
 
   if (imageFile && imageFile.size > 0) {
-    imagePath = await uploadCategoryImage(imageFile);
+    imagePath = await uploadCategoryImage(imageFile, path);
   }
 
   return categoryRepository.create({
@@ -99,7 +102,7 @@ export async function updateCategory(
   let imagePath: string | undefined;
 
   if (imageFile && imageFile.size > 0) {
-    imagePath = await uploadCategoryImage(imageFile);
+    imagePath = await uploadCategoryImage(imageFile, path);
   }
 
   return categoryRepository.update(id, {

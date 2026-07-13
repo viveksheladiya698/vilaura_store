@@ -48,7 +48,6 @@ function handleAuthError(error: unknown) {
 export async function POST(request: Request) {
   try {
     await requireAdmin();
-
     return createCategoryController(request);
   } catch (error) {
     return handleAuthError(error);
