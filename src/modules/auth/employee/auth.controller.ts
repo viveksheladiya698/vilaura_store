@@ -1,11 +1,22 @@
 import { cookies } from "next/headers";
 import { loginSchema } from "./auth.schema";
-import { loginUser, logoutUser } from "./auth.service";
+import { loginEmployee, logoutUser } from "./auth.service";
 
 export async function employeeloginController(request: Request) {
   try {
 
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json(
+        {
+          success: false,
+          message: "Request body must contain valid JSON.",
+        },
+        { status: 400 }
+      )
+    }
 
     const validationResult = loginSchema.safeParse(body);
 
@@ -14,13 +25,13 @@ export async function employeeloginController(request: Request) {
         {
           success: false,
           message: "Validation failed.",
-          errors: validationResult.error.flatten().fieldErrors,
+          errors: validationResult.error.issues,
         },
         { status: 400 }
       )
     }
 
-    const result = await loginUser(validationResult.data);
+    const result = await loginEmployee(validationResult.data);
 
     const cookieStore = await cookies();
 

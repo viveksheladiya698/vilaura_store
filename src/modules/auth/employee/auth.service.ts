@@ -5,7 +5,7 @@ import { createHash, randomBytes } from "crypto";
 
 const SESSION_DURATION_DAYS = 7;
 
-export async function loginUser(input: LoginInput) {
+export async function loginEmployee(input: LoginInput) {
   const email = input.email.trim().toLowerCase();
 
   const user = await employeeAuthRepository.findemployeeByEmail(email);

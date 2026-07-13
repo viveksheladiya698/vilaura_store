@@ -5,7 +5,18 @@ import { registerSchema } from "@/modules/auth/user/auth.schema";
 
 export async function loginController(request: Request) {
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json(
+        {
+          success: false,
+          message: "Request body must contain valid JSON.",
+        },
+        { status: 400 }
+      )
+    }
 
     const validationResult = loginSchema.safeParse(body);
 
@@ -14,7 +25,7 @@ export async function loginController(request: Request) {
         {
           success: false,
           message: "Validation failed.",
-          errors: validationResult.error.flatten().fieldErrors,
+          errors: validationResult.error.issues,
         },
         { status: 400 }
       );
@@ -58,7 +69,7 @@ export async function loginController(request: Request) {
         return Response.json(
           {
             success: false,
-            message: "Your account is inactive.",
+            message: "User Not Found.",
           },
           { status: 403 }
         );
@@ -77,11 +88,9 @@ export async function loginController(request: Request) {
   }
 }
 
-
 export async function registerController(request: Request) {
   try {
     let body: unknown;
-
     try {
       body = await request.json();
     } catch {
@@ -101,7 +110,7 @@ export async function registerController(request: Request) {
         {
           success: false,
           message: "Validation failed.",
-          errors: validationResult.error.flatten().fieldErrors,
+          errors: validationResult.error.issues,
         },
         { status: 400 }
       );
