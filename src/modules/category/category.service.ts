@@ -130,3 +130,22 @@ export async function deactivateCategory(id: number) {
 
   return categoryRepository.deactivate(id);
 }
+
+export async function getCategorybyId(id: number) {
+  const category = await categoryRepository.findById(id);
+
+  if (!category) {
+    throw new Error("CATEGORY_NOT_FOUND");
+  }
+  return category;
+}
+
+export async function getCategoryBySlug(slug: string) {
+  const category = await categoryRepository.findBySlug(slug);
+
+  if (!category) {
+    throw new Error("CATEGORY_NOT_FOUND");
+  }
+
+  return category;
+}

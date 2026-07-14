@@ -1,5 +1,5 @@
 import { createCategorySchema, updateCategorySchema } from "./category.schema";
-import { createCategory, getAllCategories, updateCategory, deactivateCategory } from "./category.service";
+import { createCategory, getAllCategories, updateCategory, deactivateCategory, getCategorybyId, getCategoryBySlug } from "./category.service";
 
 export async function createCategoryController(
   request: Request
@@ -280,6 +280,48 @@ export async function deactivateCategoryController(
     });
   } catch (error) {
     return handleCategoryError(error, "deactivate");
+  }
+}
+
+export async function getCategoryControllerById(
+  categoryId: string
+) {
+  try {
+    const id = Number(categoryId);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid category ID.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const category = await getCategorybyId(id);
+
+    return Response.json({
+      success: true,
+      message: "Category retrieved successfully.",
+      data: category,
+    });
+  } catch (error) {
+    return handleCategoryError(error, "get");
+  }
+}
+
+export async function getCategoryControllerBySlug(slug: string) {
+  try {
+    const category = await getCategoryBySlug(slug);
+
+    return Response.json({
+      success: true,
+      message: "Category retrieved successfully.",
+      data: category,
+    });
+  } catch (error) {
+    return handleCategoryError(error, "get");
   }
 }
 

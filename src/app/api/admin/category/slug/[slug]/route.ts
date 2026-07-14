@@ -1,13 +1,9 @@
-import {
-  deactivateCategoryController,
-  getCategoryControllerById,
-  updateCategoryController,
-} from "@/modules/category/category.controller";
 import { requireAdmin } from "@/modules/auth/require-admin";
+import { getCategoryControllerBySlug } from "@/modules/category/category.controller";
 
 type RouteContext = {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 };
 
@@ -56,42 +52,16 @@ function handleAdminError(error: unknown) {
 }
 
 export async function GET(
-  _request: Request,
-  context: RouteContext
-) {
-  try {
-    await requireAdmin();
-    const { id } = await context.params;
-    return getCategoryControllerById(id);
-  } catch (error) {
-    return handleAdminError(error);
-  }
-}
-
-export async function PATCH(
-  request: Request,
-  context: RouteContext
-) {
-  try {
-    await requireAdmin();
-    const { id } = await context.params;
-    return updateCategoryController(request, id);
-  } catch (error) {
-    return handleAdminError(error);
-  }
-}
-
-export async function DELETE(
-  _request: Request,
-  context: RouteContext
-) {
-  try {
-    await requireAdmin();
-
-    const { id } = await context.params;
-
-    return deactivateCategoryController(id);
-  } catch (error) {
-    return handleAdminError(error);
-  }
+    _request: Request,
+    context: RouteContext
+){
+    try {
+      console.log("call");
+      
+        await requireAdmin();
+        const { slug } = await context.params;
+        return getCategoryControllerBySlug(slug);
+    } catch (error) {
+        return handleAdminError(error);
+    }
 }

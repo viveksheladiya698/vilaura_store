@@ -137,7 +137,7 @@ model EmployeeSession {
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(cuid())
   name        String   @unique @db.VarChar(100)
   slug        String   @unique @db.VarChar(120)
   description String?  @db.VarChar(500)
@@ -145,4 +145,127 @@ model Category {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  products    Product[]
+}
+
+enum Gender {
+  MEN
+  WOMEN
+  UNISEX
+}
+
+model Product {
+  id               String   @id @default(cuid())
+
+  categoryId       String
+
+  productName      String
+  slug             String   @unique
+
+  shortDescription String?
+  description      String?
+
+  price            Decimal  @db.Decimal(10,2)
+
+  gender           Gender
+
+  isActive         Boolean  @default(true)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  category         Category         @relation(fields: [categoryId], references: [id])
+
+  variants         ProductVariant[]
+  images           ProductImage[]
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+
+  productId  String
+  sizeId     String
+  colorId    String
+
+  sku        String   @unique
+
+  isActive   Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  product    Product  @relation(fields: [productId], references: [id])
+  size       Size     @relation(fields: [sizeId], references: [id])
+  color      Color    @relation(fields: [colorId], references: [id])
+
+  inventory  Inventory?
+
+  @@unique([productId, sizeId, colorId])
+}
+
+model ProductImage {
+  id         String   @id @default(cuid())
+
+  productId  String
+
+  imageUrl   String
+  altText    String?
+
+  isPrimary  Boolean  @default(false)
+
+  sortOrder  Int      @default(0)
+
+  createdAt  DateTime @default(now())
+
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Inventory {
+  id                  String   @id @default(cuid())
+
+  variantId           String   @unique
+
+  quantity            Int      @default(0)
+
+  reservedQuantity    Int      @default(0)
+
+  lowStockThreshold   Int      @default(5)
+
+  updatedAt           DateTime @updatedAt
+
+  variant             ProductVariant @relation(fields: [variantId], references: [id])
+}
+
+model Size {
+  id           String   @id @default(cuid())
+
+  name         String   @unique
+  displayName  String
+
+  sortOrder    Int      @default(0)
+
+  isActive     Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  variants     ProductVariant[]
+}
+
+model Color {
+  id         String   @id @default(cuid())
+
+  name       String   @unique
+
+  hexCode    String?
+
+  sortOrder  Int      @default(0)
+
+  isActive   Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  variants   ProductVariant[]
 }
