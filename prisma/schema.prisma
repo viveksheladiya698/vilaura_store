@@ -182,24 +182,20 @@ model Product {
 }
 
 model ProductVariant {
-  id         String   @id @default(cuid())
+  id            String   @id @default(cuid())
+  productId     String
+  sizeId        String
+  colorId       String
+  sku           String   @unique
+  priceOverride Decimal? @db.Decimal(10,2)   // null = use Product.price
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  productId  String
-  sizeId     String
-  colorId    String
-
-  sku        String   @unique
-
-  isActive   Boolean  @default(true)
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  product    Product  @relation(fields: [productId], references: [id])
-  size       Size     @relation(fields: [sizeId], references: [id])
-  color      Color    @relation(fields: [colorId], references: [id])
-
-  inventory  Inventory?
+  product       Product        @relation(fields: [productId], references: [id])
+  size          Size           @relation(fields: [sizeId], references: [id])
+  color         Color          @relation(fields: [colorId], references: [id])
+  inventory     Inventory?
 
   @@unique([productId, sizeId, colorId])
 }
