@@ -61,7 +61,7 @@ export async function getAllCategories() {
 }
 
 export async function updateCategory(
-  id: number,
+  id: string,
   input: UpdateCategoryInput,
   imageFile?: File
 ) {
@@ -117,7 +117,7 @@ export async function updateCategory(
   });
 }
 
-export async function deactivateCategory(id: number) {
+export async function deactivateCategory(id: string) {
   const category = await categoryRepository.findById(id);
 
   if (!category) {
@@ -131,7 +131,7 @@ export async function deactivateCategory(id: number) {
   return categoryRepository.deactivate(id);
 }
 
-export async function getCategorybyId(id: number) {
+export async function getCategorybyId(id: string) {
   const category = await categoryRepository.findById(id);
 
   if (!category) {

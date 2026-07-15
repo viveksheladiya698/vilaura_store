@@ -46,7 +46,7 @@ export const categoryRepository = {
     });
   },
 
-  findById(id: number) {
+  findById(id: string) {
     return prisma.category.findUnique({
       where: {
         id,
@@ -54,7 +54,7 @@ export const categoryRepository = {
     });
   },
 
-  findByNameExceptId(name: string, id: number) {
+  findByNameExceptId(name: string, id: string) {
     return prisma.category.findFirst({
       where: {
         name: {
@@ -68,7 +68,7 @@ export const categoryRepository = {
     });
   },
 
-  findBySlugExceptId(slug: string, id: number) {
+  findBySlugExceptId(slug: string, id: string) {
     return prisma.category.findFirst({
       where: {
         slug,
@@ -80,7 +80,7 @@ export const categoryRepository = {
   },
 
   update(
-    id: number,
+    id: string,
     data: {
       name?: string;
       slug?: string;
@@ -97,7 +97,7 @@ export const categoryRepository = {
     });
   },
 
-  deactivate(id: number) {
+  deactivate(id: string) {
     return prisma.category.update({
       where: {
         id,

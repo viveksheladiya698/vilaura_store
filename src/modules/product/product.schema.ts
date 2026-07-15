@@ -1,17 +1,12 @@
 import { z } from "zod";
 import { Gender } from "@/generated/prisma/client";
 
-export const productImageSchema = z
+// Metadata only — imageUrl is NOT in here because it's generated
+// server-side AFTER upload, never trusted from client input.
+export const productImageMetaSchema = z
   .object({
-    imageUrl: z
-      .string({ error: "Image URL is required." })
-      .trim()
-      .url("Image URL must be a valid URL."),
-
     altText: z.string().trim().max(150, "Alt text cannot exceed 150 characters.").optional(),
-
     isPrimary: z.boolean().optional().default(false),
-
     sortOrder: z
       .number({ error: "Sort order must be a number." })
       .int("Sort order must be an integer.")
@@ -20,6 +15,8 @@ export const productImageSchema = z
       .default(0),
   })
   .strict();
+
+export type ProductImageMeta = z.infer<typeof productImageMetaSchema>;
 
 export const createProductSchema = z
   .object({
@@ -41,11 +38,9 @@ export const createProductSchema = z
       .max(1000000, "Price is too large."),
 
     gender: z.nativeEnum(Gender, { error: "Invalid gender value." }),
-
-    images: z
-      .array(productImageSchema, { error: "At least one image is required." })
-      .min(1, "Please add at least one product image."),
   })
   .strict();
+// NOTE: no `images` field here — image files are pulled out of formData()
+// separately in the controller, not validated as part of this JSON-shaped schema.
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;

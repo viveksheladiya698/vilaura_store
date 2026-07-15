@@ -26,12 +26,7 @@ export const productRepository = {
 
   findById(id: string) {
     return prisma.product.findUnique({
-      where: { id },
-      include: {
-        category: true,
-        images: { orderBy: { sortOrder: "asc" } },
-        variants: { include: { size: true, color: true, inventory: true } },
-      },
+      where: { id }
     });
   },
 

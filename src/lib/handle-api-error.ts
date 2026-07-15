@@ -19,6 +19,7 @@ const ERROR_MAP: Record<string, ErrorMapEntry> = {
   CATEGORY_SLUG_ALREADY_EXISTS: { status: 409, message: "A category with this slug already exists." },
   INVALID_CATEGORY_SLUG: { status: 400, message: "The category name cannot produce a valid slug." },
   CATEGORY_NOT_FOUND: { status: 404, message: "Category not found." },
+  CATEGORY_ALREADY_INACTIVE: { status: 409, message: "Category is already inactive." },
 
   // ---- product ----
   PRODUCT_NOT_FOUND: { status: 404, message: "Product not found." },
@@ -40,6 +41,7 @@ const ERROR_MAP: Record<string, ErrorMapEntry> = {
   INVALID_IMAGE_TYPE: { status: 400, message: "Only JPEG, PNG and WebP images are allowed." },
   EMPTY_IMAGE: { status: 400, message: "The selected image is empty." },
   IMAGE_TOO_LARGE: { status: 400, message: "Image size cannot exceed 10 MB." },
+  INVALID_IMAGE_METADATA: { status: 400, message: "Invalid image metadata provided." },
 };
 
 export function handleApiError(error: unknown): Response {

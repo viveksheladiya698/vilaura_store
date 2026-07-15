@@ -1,10 +1,12 @@
 import { categoryRepository } from "@/modules/category/category.repository";
 import { productRepository } from "./product.reposetory";
-import { createSlug } from "@/lib/slug"; 
-import type { CreateProductInput } from "./product.schema";
+import { createSlug } from "@/lib/slug";
+import type { CreateProductInput, ProductImageMeta } from "./product.schema";
 
-export async function createProduct(input: CreateProductInput) {
-  const category = await categoryRepository.findById(input.categoryId as any);
+type UploadedImage = ProductImageMeta & { imageUrl: string };
+
+export async function createProduct(input: CreateProductInput, images: UploadedImage[]) {
+  const category = await categoryRepository.findById(input?.categoryId);
   if (!category) {
     throw new Error("CATEGORY_NOT_FOUND");
   }
@@ -30,6 +32,6 @@ export async function createProduct(input: CreateProductInput) {
     description: input.description?.trim() || undefined,
     price: input.price,
     gender: input.gender,
-    images: input.images,
+    images,
   });
 }
