@@ -44,3 +44,36 @@ export const createProductSchema = z
 // separately in the controller, not validated as part of this JSON-shaped schema.
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
+
+
+export const updateProductSchema = z
+  .object({
+    categoryId: z.string().trim().min(1, "Category is required.").optional(),
+
+    productName: z
+      .string()
+      .trim()
+      .min(2, "Product name must contain at least 2 characters.")
+      .max(150, "Product name cannot exceed 150 characters.")
+      .optional(),
+
+    shortDescription: z.string().trim().max(200, "Short description cannot exceed 200 characters.").optional(),
+
+    description: z.string().trim().max(2000, "Description cannot exceed 2000 characters.").optional(),
+
+    price: z
+      .number()
+      .positive("Price must be greater than 0.")
+      .max(1000000, "Price is too large.")
+      .optional(),
+
+    gender: z.nativeEnum(Gender, { error: "Invalid gender value." }).optional(),
+
+    isActive: z.boolean().optional(),
+
+    // IDs of existing ProductImage rows to remove
+    imagesToDelete: z.array(z.string()).optional(),
+  })
+  .strict();
+
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;

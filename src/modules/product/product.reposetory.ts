@@ -26,7 +26,17 @@ export const productRepository = {
 
   findById(id: string) {
     return prisma.product.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        category: true,
+        images: { orderBy: { sortOrder: "asc" } },
+      },
+    });
+  },
+
+  findBySlugExceptId(slug: string, id: string) {
+    return prisma.product.findFirst({
+      where: { slug, NOT: { id } },
     });
   },
 
@@ -53,6 +63,47 @@ export const productRepository = {
         category: true,
         images: { orderBy: { sortOrder: "asc" } },
       },
+    });
+  },
+
+  update(
+    id: string,
+    data: Partial<{
+      categoryId: string;
+      productName: string;
+      slug: string;
+      shortDescription: string | null;
+      description: string | null;
+      price: number;
+      gender: Gender;
+      isActive: boolean;
+    }>
+  ) {
+    return prisma.product.update({
+      where: { id },
+      data,
+      include: {
+        category: true,
+        images: { orderBy: { sortOrder: "asc" } },
+      },
+    });
+  },
+
+  deleteImages(productId: string, imageIds: string[]) {
+    return prisma.productImage.deleteMany({
+      where: { id: { in: imageIds }, productId },
+    });
+  },
+
+  addImages(productId: string, images: ProductImageData[]) {
+    return prisma.productImage.createMany({
+      data: images.map((img) => ({
+        productId,
+        imageUrl: img.imageUrl,
+        altText: img.altText ?? null,
+        isPrimary: img.isPrimary ?? false,
+        sortOrder: img.sortOrder ?? 0,
+      })),
     });
   },
 };
