@@ -106,4 +106,71 @@ export const productRepository = {
       })),
     });
   },
+
+  // add to productRepository
+  findAll(params: {
+    skip: number;
+    take: number;
+    search?: string;
+    categoryId?: string;
+    isActive?: boolean;
+  }) {
+    return prisma.product.findMany({
+      where: {
+        ...(params.search
+          ? { productName: { contains: params.search, mode: "insensitive" } }
+          : {}),
+        ...(params.categoryId ? { categoryId: params.categoryId } : {}),
+        ...(params.isActive !== undefined ? { isActive: params.isActive } : {}),
+      },
+      skip: params.skip,
+      take: params.take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        category: true,
+        images: { where: { isPrimary: true }, take: 1 },
+        variants: {
+          select: {
+            id: true,
+            isActive: true,
+            inventory: { select: { quantity: true } },
+          },
+        },
+      },
+    });
+  },
+
+  count(params: { search?: string; categoryId?: string; isActive?: boolean }) {
+    return prisma.product.count({
+      where: {
+        ...(params.search
+          ? { productName: { contains: params.search, mode: "insensitive" } }
+          : {}),
+        ...(params.categoryId ? { categoryId: params.categoryId } : {}),
+        ...(params.isActive !== undefined ? { isActive: params.isActive } : {}),
+      },
+    });
+  },
+
+  findByIdFull(id: string) {
+    return prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        images: { orderBy: { sortOrder: "asc" } },
+        variants: {
+          include: {
+            size: true,
+            color: true,
+            inventory: true,
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+    });
+  },
+
+
+  
+
 };

@@ -1,6 +1,6 @@
 // product.controller.ts
-import { createProductSchema, productImageMetaSchema, updateProductSchema } from "./product.schema";
-import { createProduct, updateProduct } from "./product.service";
+import { createProductSchema, listProductsQuerySchema, productImageMetaSchema, updateProductSchema } from "./product.schema";
+import { createProduct, getProductById, listProducts, updateProduct } from "./product.service";
 import { uploadCategoryImage } from "@/lib/upload-image";
 import { handleApiError } from "@/lib/handle-api-error";
 
@@ -177,6 +177,61 @@ export async function updateProductController(request: Request, productId: strin
     return Response.json({
       success: true,
       message: "Product updated successfully.",
+      data: product,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export async function listProductsController(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+
+    const validationResult = listProductsQuerySchema.safeParse({
+      page: searchParams.get("page") ?? undefined,
+      limit: searchParams.get("limit") ?? undefined,
+      search: searchParams.get("search") ?? undefined,
+      categoryId: searchParams.get("categoryId") ?? undefined,
+      isActive: searchParams.get("isActive") ?? undefined,
+    });
+
+    if (!validationResult.success) {
+      return Response.json(
+        {
+          success: false,
+          message: "Validation failed.",
+          errors: validationResult.error.flatten().fieldErrors,
+        },
+        { status: 400 }
+      );
+    }
+
+    const result = await listProducts(validationResult.data);
+
+    return Response.json({
+      success: true,
+      data: result.products,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export async function getProductByIdController(productId: string) {
+  try {
+    if (typeof productId !== "string" || productId.trim().length === 0) {
+      return Response.json(
+        { success: false, message: "Invalid product ID." },
+        { status: 400 }
+      );
+    }
+
+    const product = await getProductById(productId);
+
+    return Response.json({
+      success: true,
       data: product,
     });
   } catch (error) {

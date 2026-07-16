@@ -77,3 +77,20 @@ export const updateProductSchema = z
   .strict();
 
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
+
+
+// add to product.schema.ts
+export const listProductsQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).optional().default(1),
+    limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+    search: z.string().trim().optional(),
+    categoryId: z.string().trim().optional(),
+    isActive: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((val) => (val === undefined ? undefined : val === "true")),
+  })
+  .strict();
+
+export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;
