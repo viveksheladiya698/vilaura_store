@@ -1,6 +1,6 @@
 // product.controller.ts
 import { createProductSchema, listProductsQuerySchema, productImageMetaSchema, updateProductSchema } from "./product.schema";
-import { createProduct, getProductById, listProducts, updateProduct } from "./product.service";
+import { createProduct, deactivateProduct, getProductById, listProducts, updateProduct } from "./product.service";
 import { uploadCategoryImage } from "@/lib/upload-image";
 import { handleApiError } from "@/lib/handle-api-error";
 
@@ -232,6 +232,24 @@ export async function getProductByIdController(productId: string) {
 
     return Response.json({
       success: true,
+      data: product,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export async function deactivateProductController(productId: string) {
+  try {
+    if (typeof productId !== "string" || productId.trim().length === 0) {
+      return Response.json({ success: false, message: "Invalid product ID." }, { status: 400 });
+    }
+
+    const product = await deactivateProduct(productId);
+
+    return Response.json({
+      success: true,
+      message: "Product deactivated successfully.",
       data: product,
     });
   } catch (error) {

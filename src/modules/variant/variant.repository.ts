@@ -40,4 +40,31 @@ export const variantRepository = {
       include: { size: true, color: true, inventory: true },
     });
   },
+
+  findById(variantId: string) {
+    return prisma.productVariant.findUnique({
+      where: { id: variantId },
+      include: { size: true, color: true, inventory: true },
+    });
+  },
+
+  findBySkuExceptId(sku: string, variantId: string) {
+    return prisma.productVariant.findFirst({
+      where: { sku, NOT: { id: variantId } },
+    });
+  },
+
+  update(
+    variantId: string,
+    data: Partial<{ sku: string; priceOverride: number | null; isActive: boolean }>
+  ) {
+    return prisma.productVariant.update({
+      where: { id: variantId },
+      data,
+      include: { size: true, color: true, inventory: true },
+    });
+  },
+
+
+
 };

@@ -150,3 +150,16 @@ export async function getProductById(productId: string) {
 
   return product;
 }
+
+export async function deactivateProduct(productId: string) {
+  const existing = await productRepository.findById(productId);
+  if (!existing) {
+    throw new Error("PRODUCT_NOT_FOUND");
+  }
+
+  if (!existing.isActive) {
+    throw new Error("PRODUCT_ALREADY_INACTIVE");
+  }
+
+  return productRepository.update(productId, { isActive: false });
+}

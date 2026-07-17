@@ -42,6 +42,13 @@ const ERROR_MAP: Record<string, ErrorMapEntry> = {
   EMPTY_IMAGE: { status: 400, message: "The selected image is empty." },
   IMAGE_TOO_LARGE: { status: 400, message: "Image size cannot exceed 10 MB." },
   INVALID_IMAGE_METADATA: { status: 400, message: "Invalid image metadata provided." },
+
+  // ---- size/color ----
+  PRODUCT_ALREADY_INACTIVE: { status: 409, message: "Product is already inactive." },
+  SIZE_ALREADY_EXISTS: { status: 409, message: "A size with this name already exists." },
+  COLOR_ALREADY_EXISTS: { status: 409, message: "A color with this name already exists." },
+
+
 };
 
 export function handleApiError(error: unknown): Response {

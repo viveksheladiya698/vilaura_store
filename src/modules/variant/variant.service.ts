@@ -2,7 +2,7 @@ import { productRepository } from "@/modules/product/product.reposetory";
 import { sizeRepository } from "@/modules/size/size.repository";
 import { colorRepository } from "@/modules/color/color.repository";
 import { variantRepository } from "./variant.repository";
-import type { AddVariantInput } from "./variant.schema";
+import type { AddVariantInput, UpdateVariantInput } from "./variant.schema";
 
 export async function addVariant(productId: string, input: AddVariantInput) {
   const product = await productRepository.findById(productId);
@@ -41,5 +41,25 @@ export async function addVariant(productId: string, input: AddVariantInput) {
     priceOverride: input.priceOverride,
     quantity: input.quantity,
     lowStockThreshold: input.lowStockThreshold,
+  });
+}
+
+export async function updateVariant(variantId: string, input: UpdateVariantInput) {
+  const existing = await variantRepository.findById(variantId);
+  if (!existing) {
+    throw new Error("VARIANT_NOT_FOUND");
+  }
+
+  if (input.sku) {
+    const skuTaken = await variantRepository.findBySkuExceptId(input.sku.trim(), variantId);
+    if (skuTaken) {
+      throw new Error("SKU_ALREADY_EXISTS");
+    }
+  }
+
+  return variantRepository.update(variantId, {
+    sku: input.sku?.trim(),
+    priceOverride: input.priceOverride,
+    isActive: input.isActive,
   });
 }

@@ -29,3 +29,20 @@ export const addVariantSchema = z
   .strict();
 
 export type AddVariantInput = z.infer<typeof addVariantSchema>;
+
+export const updateVariantSchema = z
+  .object({
+    sku: z
+      .string()
+      .trim()
+      .min(3, "SKU must contain at least 3 characters.")
+      .max(50, "SKU cannot exceed 50 characters.")
+      .optional(),
+
+    priceOverride: z.number().positive("Price override must be greater than 0.").nullable().optional(),
+
+    isActive: z.boolean().optional(),
+  })
+  .strict();
+
+export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;

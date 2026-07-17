@@ -1,4 +1,4 @@
-// app/api/admin/products/[productId]/route.ts
+
 import { requireAdmin } from "@/modules/auth/require-admin";
 import { getProductByIdController, updateProductController } from "@/modules/product/product.controller";
 import { handleApiError } from "@/lib/handle-api-error";
@@ -24,6 +24,21 @@ export async function GET(
     await requireAdmin();
     const { productId } = await params;
     return await getProductByIdController(productId);
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+import { deactivateProductController } from "@/modules/product/product.controller";
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ productId: string }> }
+) {
+  try {
+    await requireAdmin();
+    const { productId } = await params;
+    return await deactivateProductController(productId);
   } catch (error) {
     return handleApiError(error);
   }
