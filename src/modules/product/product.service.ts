@@ -163,3 +163,16 @@ export async function deactivateProduct(productId: string) {
 
   return productRepository.update(productId, { isActive: false });
 }
+
+export async function reactivateProduct(productId: string) {
+  const existing = await productRepository.findById(productId);
+  if (!existing) {
+    throw new Error("PRODUCT_NOT_FOUND");
+  }
+
+  if (existing.isActive) {
+    throw new Error("PRODUCT_ALREADY_ACTIVE");
+  }
+
+  return productRepository.update(productId, { isActive: true });
+}

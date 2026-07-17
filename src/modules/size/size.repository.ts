@@ -22,4 +22,14 @@ export const sizeRepository = {
       },
     });
   },
+
+  findByNameExceptId(name: string, id: string) {
+    return prisma.size.findFirst({ where: { name, NOT: { id } } });
+  },
+
+  update(id: string, data: Partial<{ name: string; displayName: string; sortOrder: number; isActive: boolean }>) {
+    return prisma.size.update({ where: { id }, data });
+  },
+
+
 };

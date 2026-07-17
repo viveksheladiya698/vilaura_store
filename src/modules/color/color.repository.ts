@@ -22,4 +22,16 @@ export const colorRepository = {
       },
     });
   },
+
+
+  findByNameExceptId(name: string, id: string) {
+    return prisma.color.findFirst({ where: { name, NOT: { id } } });
+  },
+
+  update(id: string, data: Partial<{ name: string; hexCode: string | null; sortOrder: number; isActive: boolean }>) {
+    return prisma.color.update({ where: { id }, data });
+  },
+
+
+
 };

@@ -48,6 +48,11 @@ const ERROR_MAP: Record<string, ErrorMapEntry> = {
   SIZE_ALREADY_EXISTS: { status: 409, message: "A size with this name already exists." },
   COLOR_ALREADY_EXISTS: { status: 409, message: "A color with this name already exists." },
 
+  SIZE_ALREADY_INACTIVE: { status: 409, message: "Size is already inactive." },
+  COLOR_ALREADY_INACTIVE: { status: 409, message: "Color is already inactive." },
+  PRODUCT_ALREADY_ACTIVE: { status: 409, message: "Product is already active." },
+
+
 
 };
 

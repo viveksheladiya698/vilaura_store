@@ -20,3 +20,14 @@ export const createSizeSchema = z
   .strict();
 
 export type CreateSizeInput = z.infer<typeof createSizeSchema>;
+
+export const updateSizeSchema = z
+  .object({
+    name: z.string().trim().toLowerCase().min(1).max(20).optional(),
+    displayName: z.string().trim().min(1).max(50).optional(),
+    sortOrder: z.number().int().min(0).optional(),
+    isActive: z.boolean().optional(),
+  })
+  .strict();
+
+export type UpdateSizeInput = z.infer<typeof updateSizeSchema>;
