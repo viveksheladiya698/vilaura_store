@@ -52,6 +52,11 @@ const ERROR_MAP: Record<string, ErrorMapEntry> = {
   COLOR_ALREADY_INACTIVE: { status: 409, message: "Color is already inactive." },
   PRODUCT_ALREADY_ACTIVE: { status: 409, message: "Product is already active." },
 
+  // handle-api-error.ts — add to ERROR_MAP
+  USER_INACTIVE: { status: 403, message: "Your account is inactive. Please contact support." },
+  USER_NOT_FOUND: { status: 404, message: "User not found." },
+  ADDRESS_NOT_FOUND: { status: 404, message: "Address not found." },
+  ADDRESS_ALREADY_INACTIVE: { status: 409, message: "Address is already inactive." },
 
 
 };
