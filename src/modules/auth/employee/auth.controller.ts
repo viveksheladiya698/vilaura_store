@@ -35,7 +35,7 @@ export async function employeeloginController(request: Request) {
 
     const cookieStore = await cookies();
 
-    cookieStore.set("session_token", result.sessionToken, {
+    cookieStore.set("admin_session_token", result.sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -96,13 +96,13 @@ export async function employeeloginController(request: Request) {
 export async function logoutController() {
   try {
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("session_token")?.value;
+    const sessionToken = cookieStore.get("admin_session_token")?.value;
 
     if (sessionToken) {
       await logoutUser(sessionToken);
     }
 
-    cookieStore.delete("session_token");
+    cookieStore.delete("admin_session_token");
 
     return Response.json(
       {

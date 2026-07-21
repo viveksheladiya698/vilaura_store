@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function requireAdmin() {
   const cookieStore = await cookies();
 
-  const sessionToken = cookieStore.get("session_token")?.value;
+  const sessionToken = cookieStore.get("admin_session_token")?.value;
 
   if (!sessionToken) {
     throw new Error("UNAUTHENTICATED");
