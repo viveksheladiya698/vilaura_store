@@ -30,3 +30,11 @@ export async function requireUser() {
     return userSession.user;
 
 }
+
+export async function getOptionalUser() {
+  try {
+    return await requireUser();
+  } catch {
+    return null;
+  }
+}
