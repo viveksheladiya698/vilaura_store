@@ -30,8 +30,7 @@ export async function listPublicProducts(input: PublicListProductsInput) {
     id: p.id,
     productName: p.productName,
     slug: p.slug,
-    shortDescription: p.shortDescription,
-    price: p.price,
+    price: p.price.toString(), // convert Decimal -> string
     gender: p.gender,
     category: p.category,
     primaryImage: p.images[0]?.imageUrl ?? null,
@@ -58,7 +57,7 @@ export async function getPublicProductBySlug(slug: string) {
   const variants = product.variants.map((v) => ({
     id: v.id,
     sku: v.sku,
-    price: v.priceOverride ?? product.price,
+    price: (v.priceOverride ?? product.price).toString(), // convert Decimal -> string
     size: v.size,
     color: v.color,
     inStock: (v.inventory?.quantity ?? 0) > 0,
@@ -70,7 +69,7 @@ export async function getPublicProductBySlug(slug: string) {
     slug: product.slug,
     shortDescription: product.shortDescription,
     description: product.description,
-    price: product.price,
+    price: product.price.toString(), // convert Decimal -> string
     gender: product.gender,
     category: product.category,
     images: product.images,

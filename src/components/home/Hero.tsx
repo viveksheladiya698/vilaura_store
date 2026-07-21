@@ -22,7 +22,7 @@ const SLIDES: Slide[] = [
     heading: "Style that moves with you.",
     description:
       "Premium quality pants for every occasion. Comfort, durability, confidence.",
-    image: "/images/hero/hero-1.jpg",
+    image: "/images/hero/hero-1.png",
     primaryCta: { label: "Shop Now", href: "/products" },
     secondaryCta: { label: "Explore Collections", href: "/collections" },
   },
