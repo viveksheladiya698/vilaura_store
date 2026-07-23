@@ -41,3 +41,29 @@ export function validateRegisterForm(values: RegisterFormValues): RegisterFormEr
 
   return errors;
 }
+
+
+// add to existing file
+export type LoginFormValues = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
+
+export type LoginFormErrors = Partial<Record<keyof LoginFormValues, string>>;
+
+export function validateLoginForm(values: LoginFormValues): LoginFormErrors {
+  const errors: LoginFormErrors = {};
+
+  if (!values.email.trim()) {
+    errors.email = "Email address is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+    errors.email = "Enter a valid email address.";
+  }
+
+  if (!values.password) {
+    errors.password = "Password is required.";
+  }
+
+  return errors;
+}
